@@ -49,6 +49,25 @@ var budgetController = (function () {
 
             //Return new element
             return newItem;
+
+        },
+
+        getBalance: function() {
+            var balance;
+
+            balance = 0;
+
+            data.allItems.inc.forEach(function (current, index, array) {
+                balance += parseInt(current.value) ;
+            });
+
+            data.allItems.exp.forEach(function (current, index, array) {
+                balance -= parseInt(current.value) ;
+            });
+
+            console.log(balance);
+
+            return balance;
         }
     };
 
@@ -65,7 +84,8 @@ var UIController = (function () {
         inputValue: '.add__value',
         inputBtn: '.add__btn',
         incomeContainer: '.income__list',
-        expensesContainer: '.expenses__list'
+        expensesContainer: '.expenses__list',
+        balanceUI: '.budget__value'
     };
 
     return {
@@ -118,6 +138,12 @@ var UIController = (function () {
             });
 
             fields[0].focus();
+        },
+
+        updateBalance: function(bal) {
+
+           document.querySelector(DOMStrings.balanceUI).textContent = bal;
+
         }
     };
 
@@ -141,9 +167,9 @@ var controller = (function (budgetCtrl, UICtrl) {
         });
     };
 
+
     var ctrlAddItem = function () {
-        var input;
-        var newItem;
+        var input, newItem, balance;
 
         // 1. Get the input data
         input = UICtrl.getInput();
@@ -158,6 +184,8 @@ var controller = (function (budgetCtrl, UICtrl) {
         UICtrl.clearField();
 
         // 4. Calculate budget
+        balance = budgetCtrl.getBalance();
+        UICtrl.updateBalance(balance);
 
         // 5. Display budget on UI
     };
